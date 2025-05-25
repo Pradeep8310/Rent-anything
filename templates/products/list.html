@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    {% if category %}{{ category.name }}{% else %}All Products{% endif %} | RentAll
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row mb-4">
+        <div class="col-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'product_list' %}">Products</a></li>
+                    {% if category %}
+                        <li class="breadcrumb-item active" aria-current="page">{{ category.name }}</li>
+                    {% endif %}
+                </ol>
+            </nav>
+            
+            <h1 class="display-5 mb-4">
+                {% if category %}
+                    {{ category.name }} Products
+                {% else %}
+                    All Products
+                {% endif %}
+            </h1>
+            
+            {% if category and category.description %}
+                <p class="lead">{{ category.description }}</p>
+            {% endif %}
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-3 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Categories</h5>
+                </div>
+                <div class="list-group list-group-flush">
+                    <a href="{% url 'product_list' %}" class="list-group-item list-group-item-action {% if not category %}active{% endif %}">
+                        All Products
+                    </a>
+                    {% for c in categories %}
+                        <a href="{{ c.get_absolute_url }}" class="list-group-item list-group-item-action {% if category.id == c.id %}active{% endif %}">
+                            {{ c.name }}
+                        </a>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-9">
+            <div class="row">
+                {% for product in products %}
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100 shadow-sm animated-item">
+                            {% if product.image %}
+                                <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}">
+                            {% else %}
+                                <img src="https://images.pexels.com/photos/3943841/pexels-photo-3943841.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" class="card-img-top" alt="{{ product.name }}">
+                            {% endif %}
+                            
+                            <div class="card-body">
+                                <h5 class="card-title">{{ product.name }}</h5>
+                                <p class="card-text text-muted">{{ product.description|truncatechars:80 }}</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="badge bg-primary">₹{{ product.price_per_day }}/day</span>
+                                    {% if product.available %}
+                                        <span class="badge bg-success">Available</span>
+                                    {% else %}
+                                        <span class="badge bg-danger">Out of Stock</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="card-footer bg-white">
+                                <a href="{{ product.get_absolute_url }}" class="btn btn-outline-primary d-block">View Details</a>
+                            </div>
+                        </div>
+                    </div>
+                {% empty %}
+                    <div class="col-12">
+                        <div class="alert alert-info text-center py-5">
+                            <h4 class="alert-heading">No products found</h4>
+                            <p>There are no products available in this category at the moment.</p>
+                            <a href="{% url 'product_list' %}" class="btn btn-primary mt-3">Browse All Products</a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

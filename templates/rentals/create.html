@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Rent {{ product.name }} | RentAll{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'product_list' %}">Products</a></li>
+            <li class="breadcrumb-item"><a href="{{ product.get_absolute_url }}">{{ product.name }}</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Rent</li>
+        </ol>
+    </nav>
+    
+    <div class="row">
+        <div class="col-md-6 offset-md-3">
+            <div class="card shadow">
+                <div class="card-header bg-white py-3">
+                    <h3 class="mb-0">Rent {{ product.name }}</h3>
+                </div>
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center mb-4">
+                        {% if product.image %}
+                            <img src="{{ product.image.url }}" alt="{{ product.name }}" class="img-thumbnail me-3" style="width: 100px; height: 100px; object-fit: cover;">
+                        {% else %}
+                            <img src="https://images.pexels.com/photos/3943841/pexels-photo-3943841.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" alt="{{ product.name }}" class="img-thumbnail me-3" style="width: 100px; height: 100px; object-fit: cover;">
+                        {% endif %}
+                        <div>
+                            <h5 class="mb-1">{{ product.name }}</h5>
+                            <p class="text-muted mb-0">{{ product.category.name }}</p>
+                            <p class="text-primary mb-0"> ₹{{ product.price_per_day }} per day</p>
+                        </div 
+                    </div>
+                    
+                    <form method="post">
+                        {% csrf_token %}
+                        {{ form|crispy }}
+                        
+                        <div class="alert alert-info mt-3">
+                            <h6 class="alert-heading">Rental Terms:</h6>
+                            <ul class="mb-0">
+                                <li>The rental period includes both the start and end dates.</li>
+                                <li>Payment will be collected upon approval of your rental request.</li>
+                                <li>You are responsible for the item during the rental period.</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="d-grid gap-2 mt-4">
+                            <button type="submit" class="btn btn-primary btn-lg">Complete Rental</button>
+                        </div>
+                        <div class="text-center mt-3">
+                            <a href="{{ product.get_absolute_url }}" class="btn btn-outline-secondary">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block extra_js %}
+<script>
+    // Calculate and display total price dynamically
+    document.addEventListener('DOMContentLoaded', function() {
+        const startDateInput = document.getElementById('id_start_date');
+        const endDateInput = document.getElementById('id_end_date');
+        const pricePerDay = {{ product.price_per_day }};
+        
+        function calculateTotal() {
+            if (startDateInput.value && endDateInput.value) {
+                const startDate = new Date(startDateInput.value);
+                const endDate = new Date(endDateInput.value);
+                
+                if (endDate >= startDate) {
+                    // Calculate days difference (including both start and end date)
+                    const daysDiff = Math.floor((endDate - startDate) / (1000 * 60 * 60 * 24)) + 1;
+                    const totalPrice = daysDiff * pricePerDay;
+                    
+                    // Create or update total price display
+                    let totalPriceElement = document.getElementById('total-price');
+                    if (!totalPriceElement) {
+                        totalPriceElement = document.createElement('div');
+                        totalPriceElement.id = 'total-price';
+                        totalPriceElement.className = 'alert alert-success mt-3';
+                        endDateInput.parentNode.parentNode.after(totalPriceElement);
+                    }
+                    
+                    totalPriceElement.innerHTML = `
+                        <h6 class="alert-heading">Rental Summary:</h6>
+                        <p class="mb-1">Duration: ${daysDiff} day${daysDiff !== 1 ? 's' : ''}</p>
+                        <p class="mb-0"><strong>Total Price: ${totalPrice.toFixed(2)}</strong></p>
+                    `;
+                }
+            }
+        }
+        
+        startDateInput.addEventListener('change', calculateTotal);
+        endDateInput.addEventListener('change', calculateTotal);
+    });
+</script>
+{% endblock %}
+{% endblock %}

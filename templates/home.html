@@ -1,0 +1,160 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+    <!-- Hero Section -->
+    <section class="hero-section text-center">
+        <div class="container">
+            <h1 class="display-4 mb-4">Rent Anything You Need</h1>
+            <p class="lead mb-4">Find high-quality products for your next project, event, or everyday needs</p>
+            <a href="{% url 'product_list' %}" class="btn btn-primary btn-lg px-5">Browse Products</a>
+        </div>
+    </section>
+    
+    <!-- Featured Categories -->
+    <section class="py-5">
+        <div class="container">
+            <h2 class="text-center mb-5">Browse by Category</h2>
+            <div class="row">
+                {% for category in categories %}
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100 shadow-sm">
+                            {% if category.image %}
+                                <img src="{{ category.image.url }}" class="card-img-top" alt="{{ category.name }}">
+                            {% else %}
+                                <img src="https://images.pexels.com/photos/6169668/pexels-photo-6169668.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" class="card-img-top" alt="{{ category.name }}">
+                            {% endif %}
+                            <div class="card-body text-center">
+                                <h5 class="card-title mb-3">{{ category.name }}</h5>
+                                <p class="card-text text-muted">{{ category.description|truncatechars:100 }}</p>
+                                <a href="{{ category.get_absolute_url }}" class="btn btn-outline-primary mt-2">View Products</a>
+                            </div>
+                        </div>
+                    </div>
+                {% empty %}
+                    <div class="col-12 text-center">
+                        <p>No categories available yet. Check back soon!</p>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+    
+    <!-- How It Works -->
+    <section class="py-5 bg-light">
+        <div class="container">
+            <h2 class="text-center mb-5">How It Works</h2>
+            <div class="row text-center">
+                <div class="col-md-4 mb-4 mb-md-0">
+                    <div class="bg-white rounded-circle mx-auto mb-4 d-flex align-items-center justify-content-center" style="width: 100px; height: 100px;">
+                        <span class="display-4 text-primary">1</span>
+                    </div>
+                    <h4>Browse & Select</h4>
+                    <p class="text-muted">Explore our wide range of products and select what you need</p>
+                </div>
+                <div class="col-md-4 mb-4 mb-md-0">
+                    <div class="bg-white rounded-circle mx-auto mb-4 d-flex align-items-center justify-content-center" style="width: 100px; height: 100px;">
+                        <span class="display-4 text-primary">2</span>
+                    </div>
+                    <h4>Book & Pay</h4>
+                    <p class="text-muted">Choose your rental dates and complete the booking process</p>
+                </div>
+                <div class="col-md-4">
+                    <div class="bg-white rounded-circle mx-auto mb-4 d-flex align-items-center justify-content-center" style="width: 100px; height: 100px;">
+                        <span class="display-4 text-primary">3</span>
+                    </div>
+                    <h4>Enjoy & Return</h4>
+                    <p class="text-muted">Use your rented product and return it when you're done</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Testimonials -->
+    <section class="py-5">
+        <div class="container">
+            <h2 class="text-center mb-5">What Our Customers Say</h2>
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                            </div>
+                            <p class="card-text">"RentAll made my event planning so much easier. I was able to rent all the equipment I needed without breaking the bank!"</p>
+                        </div>
+                        <div class="card-footer bg-white border-0">
+                            <div class="d-flex align-items-center">
+                                <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">JD</div>
+                                <div>
+                                    <h6 class="mb-0">John Doe</h6>
+                                    <small class="text-muted">Event Planner</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                            </div>
+                            <p class="card-text">"Great quality products and excellent customer service. The billing system is transparent and easy to understand!"</p>
+                        </div>
+                        <div class="card-footer bg-white border-0">
+                            <div class="d-flex align-items-center">
+                                <div class="rounded-circle bg-success text-white d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">JS</div>
+                                <div>
+                                    <h6 class="mb-0">Jane Smith</h6>
+                                    <small class="text-muted">Photographer</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star-half-alt text-warning"></i>
+                            </div>
+                            <p class="card-text">"I needed a specialized tool for a weekend project, and RentAll had exactly what I needed. Will definitely use again!"</p>
+                        </div>
+                        <div class="card-footer bg-white border-0">
+                            <div class="d-flex align-items-center">
+                                <div class="rounded-circle bg-danger text-white d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">RJ</div>
+                                <div>
+                                    <h6 class="mb-0">Robert Johnson</h6>
+                                    <small class="text-muted">DIY Enthusiast</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- CTA -->
+    <section class="py-5 bg-primary text-white text-center">
+        <div class="container">
+            <h2 class="mb-4">Ready to Rent?</h2>
+            <p class="lead mb-4">Join thousands of satisfied customers who trust RentAll for their rental needs</p>
+            <a href="{% url 'register' %}" class="btn btn-light btn-lg px-5 me-3">Sign Up Now</a>
+            <a href="{% url 'product_list' %}" class="btn btn-outline-light btn-lg px-5">Browse Products</a>
+        </div>
+    </section>
+{% endblock %}

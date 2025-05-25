@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+
+{% block title %}My Profile | RentAll{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-md-4 mb-4">
+            <div class="card shadow">
+                <div class="card-body text-center">
+                    <div class="display-1 mb-3 text-primary">
+                        {{ user.username|first|upper }}
+                    </div>
+                    <h3 class="card-title">{{ user.get_full_name|default:user.username }}</h3>
+                    <p class="text-muted">{{ user.email }}</p>
+                    <hr>
+                    <div class="text-start">
+                        <p><strong>Username:</strong> {{ user.username }}</p>
+                        <p><strong>Phone:</strong> {{ user.profile.phone|default:"Not provided" }}</p>
+                        <p><strong>Address:</strong> {{ user.profile.address|default:"Not provided" }}</p>
+                        <p><strong>Member since:</strong> {{ user.date_joined|date:"F j, Y" }}</p>
+                    </div>
+                    <a href="{% url 'update_profile' %}" class="btn btn-primary mt-3">Edit Profile</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-white">
+                    <h4 class="mb-0">Recent Rentals</h4>
+                </div>
+                <div class="card-body">
+                    {% if rentals %}
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Product</th>
+                                        <th>Dates</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for rental in rentals %}
+                                        <tr>
+                                            <td>
+                                                <a href="{{ rental.product.get_absolute_url }}">{{ rental.product.name }}</a>
+                                            </td>
+                                            <td>{{ rental.start_date|date:"M d" }} - {{ rental.end_date|date:"M d, Y" }}</td>
+                                            <td>
+                                                <span class="badge badge-{{ rental.status }} text-capitalize">{{ rental.status }}</span>
+                                            </td>
+                                            <td>
+                                                <div class="btn-group">
+                                                    {% if rental.status != 'cancelled' %}
+                                                        <a href="{% url 'generate_bill' rental.id %}" class="btn btn-sm btn-outline-primary">Download Bill</a>
+                                                    {% endif %}
+                                                    {% if rental.status == 'pending' or rental.status == 'active' %}
+                                                        <a href="{% url 'cancel_rental' rental.id %}" class="btn btn-sm btn-outline-danger ms-2" onclick="return confirm('Are you sure you want to cancel this rental?')">Cancel</a>
+                                                    {% endif %}
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <a href="{% url 'my_rentals' %}" class="btn btn-outline-primary">View All Rentals</a>
+                    {% else %}
+                        <p class="text-center mb-0">You don't have any rentals yet.</p>
+                        <div class="text-center mt-3">
+                            <a href="{% url 'product_list' %}" class="btn btn-primary">Browse Products</a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
